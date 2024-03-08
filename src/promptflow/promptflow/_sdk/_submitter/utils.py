@@ -41,7 +41,6 @@ from promptflow._sdk._errors import InvalidFlowError, RunOperationError
 from promptflow._sdk._load_functions import load_flow
 from promptflow._sdk._utils import (
     _merge_local_code_and_additional_includes,
-    get_local_connections_from_executable,
     get_used_connection_names_from_dict,
     update_dict_value_with_connections,
 )
@@ -211,7 +210,9 @@ class SubmitterHelper:
             load_dotenv(environment_variables)
 
     @staticmethod
-    def resolve_connections(flow: Flow, client=None, connections_to_ignore=None) -> dict:
+    def resolve_connections(
+        flow: Flow, *, client=None, connections_to_ignore=None, connections_to_add: List[str] = None
+    ) -> dict:
         from promptflow._sdk.entities._eager_flow import EagerFlow
 
         if isinstance(flow, EagerFlow):
@@ -229,20 +230,21 @@ class SubmitterHelper:
                 flow_file=flow.flow_dag_path,
                 working_dir=flow.code,
             )
-            return SubmitterHelper.resolve_connection_names(
-                connection_names=SubmitterHelper.get_used_connection_names(tools_meta=tools_meta, flow_dag=flow._data),
-                client=client,
-                connections_to_ignore=connections_to_ignore,
-            )
+            connection_names = SubmitterHelper.get_used_connection_names(tools_meta=tools_meta, flow_dag=flow._data)
         else:
             # TODO: avoid touch ExecutableFlow here
             with _change_working_dir(flow.code):
                 executable = ExecutableFlow.from_yaml(flow_file=flow.path, working_dir=flow.code)
-            executable.name = str(Path(flow.code).stem)
+            connection_names = executable.get_connection_names()
 
-            return get_local_connections_from_executable(
-                executable=executable, client=client, connections_to_ignore=connections_to_ignore
-            )
+        if connections_to_add:
+            connection_names.extend(connections_to_add)
+
+        return SubmitterHelper.resolve_connection_names(
+            connection_names=connection_names,
+            client=client,
+            connections_to_ignore=connections_to_ignore,
+        )
 
     @staticmethod
     def get_used_connection_names(tools_meta: dict, flow_dag: dict):
