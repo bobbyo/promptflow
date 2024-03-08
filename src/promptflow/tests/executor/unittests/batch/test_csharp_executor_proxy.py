@@ -19,7 +19,8 @@ async def get_executor_proxy():
     flow_file = get_yaml_file("csharp_flow")
     working_dir = get_flow_folder("csharp_flow")
     with patch.object(CSharpExecutorProxy, "ensure_executor_startup", return_value=None):
-        return await CSharpExecutorProxy.create(flow_file, working_dir)
+        with patch.object(CSharpExecutorProxy, "_initialize", return_value=None):
+            return await CSharpExecutorProxy.create(flow_file, working_dir)
 
 
 @pytest.mark.unittest

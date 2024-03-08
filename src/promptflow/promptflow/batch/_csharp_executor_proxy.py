@@ -139,8 +139,8 @@ class CSharpExecutorProxy(CSharpBaseExecutorProxy):
         )
         executor_proxy._initialize(
             yaml_path=flow_file.as_posix(),
-            assembly_folder=working_dir.as_posix(),
-            connections=connections,
+            assembly_folder=working_dir.as_posix() if working_dir else ".",  # default to current directory
+            connections=connections or {},
             environment_variables=kwargs.get("environment_variables", {}),
             initialize_session_id=kwargs.get("initialize_session_id", str(uuid.uuid4())),
         )
