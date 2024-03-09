@@ -34,7 +34,7 @@ def get_package_dependencies(package_name_list):
     dependencies = []
     for package_name in package_name_list:
         result = subprocess.run(['pip', 'show', package_name], stdout=subprocess.PIPE)
-        lines = result.stdout.decode('utf-8').splitlines()
+        lines = result.stdout.decode('utf-8', errors="ignore").splitlines()
         for line in lines:
             if line.startswith('Requires'):
                 dependency = line.split(': ')[1].split(', ')
