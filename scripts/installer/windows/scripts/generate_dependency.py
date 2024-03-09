@@ -72,12 +72,6 @@ if __name__ == '__main__':
     hidden_imports.append("azure.storage.filedatalake")
 
 
-    # pyrsistent has no metadata
-    no_metadata_packages = ["pyrsistent", "backoff", "tzlocal", "validators"]
-    for package in no_metadata_packages:
-        if package in meta_packages:
-            meta_packages.remove(package)
-
     render_context = {
         "hidden_imports": hidden_imports,
         "all_packages": all_packages,
