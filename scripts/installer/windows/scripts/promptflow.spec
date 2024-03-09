@@ -7,12 +7,16 @@ datas = [('../resources/CLI_LICENSE.rtf', '.'), ('../../../../src/promptflow/NOT
 ('../../../../src/promptflow-tools/promptflow/tools/', './promptflow/tools/'),
 ('./pf.bat', '.'), ('./pfs.bat', '.'), ('./pfazure.bat', '.'), ('./pfsvc.bat', '.')]
 
-datas += collect_data_files('streamlit')
-datas += copy_metadata('streamlit')
-datas += collect_data_files('streamlit_quill')
+
+packages = ['tqdm', 'fixedint', 'altgraph', 'pefile', 'werkzeug', 'Flask', 'toml', 'beautifulsoup4', 'blinker', 'azureml-ai-monitoring', 'typing-extensions', 'greenlet', 'keyring', 'filetype', 'psutil', 'Werkzeug', 'filelock', 'pydeck', 'docutils', 'streamlit-quill', 'flask-cors', 'protobuf', 'tornado', 'waitress', 'marshmallow', 'python-dateutil', 'pydash', 'azure-storage-file-datalake', 'opencensus-ext-azure', 'tzlocal', 'click', 'googleapis-common-protos', 'cryptography', 'azure-cosmos', 'opentelemetry-exporter-otlp-proto-common', 'cachetools', 'pywin32-ctypes', 'flask', 'bs4', 'pyinstaller', 'strictyaml', 'sniffio', 'flask-restx', 'azure-common', 'fastapi', 'requests', 'opentelemetry-proto', 'importlib-resources', 'azure-mgmt-core', 'azure-identity', 'opentelemetry-sdk', 'colorama', 'pydantic', 'cffi', 'pillow', 'certifi', 'packaging', 'pandas', 'tenacity', 'setuptools', 'rich', 'deprecated', 'regex', 'msrest', 'azure-storage-blob', 'ruamel.yaml', 'anyio', 'python-dotenv', 'jaraco.classes', 'importlib-metadata', 'gitpython', 'tiktoken', 'distro', 'pyjwt', 'pyarrow', 'sqlalchemy', 'tabulate', 'msal-extensions', 'opentelemetry-api', 'backoff', 'pyinstaller-hooks-contrib', 'numpy', 'ruamel.yaml.clib', 'azure-ai-ml', 'itsdangerous', 'httpx', 'idna', 'attrs', 'altair', 'aniso8601', 'streamlit', 'pytz', 'starlette', 'azure-core', 'gitdb', 'pyrsistent', 'pyyaml', 'opentelemetry-exporter-otlp-proto-http', 'validators', 'six', 'httpcore', 'azure-storage-file-share', 'watchdog', 'Jinja2', 'openai', 'azure-monitor-opentelemetry-exporter', 'msal', 'isodate', 'jsonschema']
+
+for package in packages:
+    datas += copy_metadata(package)
+    datas += collect_data_files(package)
+
 datas += collect_data_files('promptflow')
-datas += copy_metadata('opentelemetry.sdk')
-hidden_imports = ['streamlit.runtime.scriptrunner.magic_funcs', 'win32timezone', 'promptflow', 'opentelemetry.exporter.otlp.proto.http']
+datas += copy_metadata('promptflow')
+hidden_imports = [win32timezone', 'promptflow', 'tqdm', 'fixedint', 'altgraph', 'pefile', 'werkzeug', 'Flask', 'toml', 'beautifulsoup4', 'blinker', 'azureml.ai.monitoring', 'typing.extensions', 'greenlet', 'keyring', 'filetype', 'psutil', 'Werkzeug', 'filelock', 'pydeck', 'docutils', 'streamlit_quill', 'flask.cors', 'protobuf', 'tornado', 'waitress', 'marshmallow', 'python.dateutil', 'pydash', 'azure.storage.file.datalake', 'opencensus.ext.azure', 'tzlocal', 'click', 'googleapis.common.protos', 'cryptography', 'azure.cosmos', 'opentelemetry.exporter.otlp.proto.common', 'cachetools', 'pywin32.ctypes', 'flask', 'bs4', 'pyinstaller', 'strictyaml', 'sniffio', 'flask.restx', 'azure.common', 'fastapi', 'requests', 'opentelemetry.proto', 'importlib.resources', 'azure.mgmt.core', 'azure.identity', 'opentelemetry.sdk', 'colorama', 'pydantic', 'cffi', 'pillow', 'certifi', 'packaging', 'pandas', 'tenacity', 'setuptools', 'rich', 'deprecated', 'regex', 'msrest', 'azure.storage.blob', 'ruamel.yaml', 'anyio', 'python.dotenv', 'jaraco.classes', 'importlib.metadata', 'gitpython', 'tiktoken', 'distro', 'pyjwt', 'pyarrow', 'sqlalchemy', 'tabulate', 'msal.extensions', 'opentelemetry.api', 'backoff', 'pyinstaller.hooks.contrib', 'numpy', 'ruamel.yaml.clib', 'azure.ai.ml', 'itsdangerous', 'httpx', 'idna', 'attrs', 'altair', 'aniso8601', 'streamlit', 'streamlit_quill', 'pytz', 'starlette', 'azure.core', 'gitdb', 'pyrsistent', 'pyyaml', 'opentelemetry.exporter.otlp.proto.http', 'validators', 'six', 'httpcore', 'azure.storage.file.share', 'watchdog', 'Jinja2', 'openai', 'azure.monitor.opentelemetry.exporter', 'msal', 'isodate', 'jsonschema']
 
 block_cipher = None
 
