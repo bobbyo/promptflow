@@ -18,7 +18,7 @@ for package in meta_packages:
     datas += copy_metadata(package)
 
 opentelemetry_datas, opentelemetry_binaries, opentelemetry_hiddenimports = collect_all('opentelemetry')
-data += opentelemetry_datas
+datas += opentelemetry_datas
 datas += collect_data_files('streamlit_quill')
 datas += collect_data_files('promptflow')
 datas += copy_metadata('promptflow')
