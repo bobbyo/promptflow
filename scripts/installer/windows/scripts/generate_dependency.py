@@ -75,7 +75,8 @@ if __name__ == '__main__':
     # pyrsistent has no metadata
     no_metadata_packages = ["pyrsistent", "backoff", "tzlocal", "validators"]
     for package in no_metadata_packages:
-        meta_packages.remove(package)
+        if package in meta_packages:
+            meta_packages.remove(package)
 
     render_context = {
         "hidden_imports": hidden_imports,
