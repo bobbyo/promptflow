@@ -11,7 +11,7 @@ import json
 import logging
 import traceback
 from datetime import datetime
-from typing import Callable
+from typing import Callable, Optional
 
 from flask import request
 from google.protobuf.json_format import MessageToJson
@@ -29,9 +29,21 @@ from promptflow._sdk.entities._trace import Span
 from promptflow._utils.thread_utils import ThreadWithContextVars
 
 
-# Pass in the get_created_by_info_with_cache and logger to avoid app related dependency.
-# To guarantee we can reuse this function in other places.
-def trace_collector(get_created_by_info_with_cache: Callable, logger: logging.Logger):
+def trace_collector(logger: logging.Logger, get_created_by_info_with_cache: Optional[Callable] = None):
+    """
+    This function acts as a trace collector, allowing for saving trace data to local/cloud database.
+
+    It is designed to be reusable across different parts of the application or even in different applications.
+    By passing in the logger and an optional callable that retrieves cached creation information,
+    the function avoids dependencies on specific app-related details.
+
+    Parameters:
+    - logger (logging.Logger): The logger object to be used for logging trace information.
+    - get_created_by_info_with_cache (Callable, optional): A callable that, when provided,
+    retrieves the creation information from a cache.
+    This is used to enrich the trace data without direct dependency on application-specific logic.
+
+    """
     content_type = request.headers.get("Content-Type")
     # binary protobuf encoding
     if "application/x-protobuf" in content_type:
@@ -68,7 +80,7 @@ def trace_collector(get_created_by_info_with_cache: Callable, logger: logging.Lo
         raise NotImplementedError
 
 
-def _try_write_trace_to_cosmosdb(all_spans, get_created_by_info_with_cache: Callable, logger: logging.Logger):
+def _try_write_trace_to_cosmosdb(all_spans, logger: logging.Logger, get_created_by_info_with_cache: Callable = None):
     if not all_spans:
         return
     try:
@@ -96,10 +108,9 @@ def _try_write_trace_to_cosmosdb(all_spans, get_created_by_info_with_cache: Call
 
         get_client(CosmosDBContainerName.LINE_SUMMARY, subscription_id, resource_group_name, workspace_name)
 
-        # For local scenario, we already get created_by info in advance as starting the service.
-        # But if customer didn't run `az login`, we can't get it.
-        # So, we try to get and cache it again after getting CosmosDB token.
-        # Don't bother to run in new thread because in most cases, it will be cached.
+        # Try to get created_by info after getting cosmosDB token.
+        # For local scenario, it takes at most 3 seconds to get the info.
+        # If we want to reduce the time, we can also run the code in worker thread.
         created_by = get_created_by_info_with_cache() if get_created_by_info_with_cache else {}
 
         span_thread.join()
