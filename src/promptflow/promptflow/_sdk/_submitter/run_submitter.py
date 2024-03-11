@@ -21,7 +21,6 @@ from promptflow.contracts.run_mode import RunMode
 from promptflow.exceptions import UserErrorException, ValidationException
 
 from ..._utils.logger_utils import LoggerFactory
-from .._configuration import Configuration
 from .._load_functions import load_flow
 from ..entities._eager_flow import EagerFlow
 from .utils import SubmitterHelper, variant_overwrite_context
@@ -83,11 +82,10 @@ class RunSubmitter:
             logger.debug(f"Resume from run {run._resume_from!r}...")
             run._resume_from = self._ensure_run_completed(run._resume_from)
         # Start trace
-        if Configuration(overrides=self._client._config).is_internal_features_enabled():
-            from promptflow.tracing._start_trace import start_trace
+        from promptflow.tracing._start_trace import start_trace
 
-            logger.debug("Starting trace for flow run...")
-            start_trace(session=kwargs.get("session", None), attributes=attributes, run=run.name)
+        logger.info("Starting trace for flow run...")
+        start_trace(session=kwargs.get("session", None), attributes=attributes, run=run.name)
         self._validate_inputs(run=run)
 
         local_storage = LocalStorageOperations(run, stream=stream, run_mode=RunMode.Batch)
